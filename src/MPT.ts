@@ -1,153 +1,29 @@
 
-export class LeafNode{
-    prefix : number;
-    keyEnd : string;
-    value : number;
-    constructor(k:string,v:number){
-        if(k.length%2 == 0){
-            // Leaf node with even number of keyend
-            this.prefix = 2
-        }
-        else{
-            // Leaf node with odd number of keyend
-            this.prefix = 3
-        }
-        this.keyEnd = k;
-        this.value = v;
-    }
-    print(){
-        console.log(this);
-    }
-}
-
-export class BranchNode{
-    HexArray : Array<any>[16];
-    value : number;
-    constructor(){
-        this.HexArray = new Array<any>(16)
-    }
-    Addnode(k:string,v:number){
-        let index = parseInt("0x"+ k[0])
-        if(this.HexArray[index]){
-            if(this.HexArray[index].constructor.name == LeafNode.name){
-                let Leaf = this.HexArray[index];
-                let subaddress = this.longest(Leaf.keyEnd,k.substring(1,k.length));
-                let tempExtension = new ExtensionNode(subaddress);
-                tempExtension.Addnode(k.substring(1,k.length),v)
-                tempExtension.Addnode(Leaf.keyEnd,Leaf.value)
-                this.HexArray[index] = tempExtension;
-            }
-            else if(this.HexArray[index].constructor.name == ExtensionNode.name){
-                this.HexArray[index].Addnode(k.substring(1,k.length),v);
-            }
-        } 
-        else{
-            console.log("QQ",k.substring(1,k.length))
-            this.HexArray[index] = new LeafNode(k.substring(1,k.length),v);
-        }
-    }
-    print(){
-        for(let index = 0;index < 16 ;index ++){
-            if(this.HexArray[index]){
-                this.HexArray[index].print()
-            }
-        }
-        console.log(this);
-    }
-    longest (a : string,b: string){
-        let sub = "";
-        for(let i  = 0;i < a.length;i++){
-            if(a[i] == b[i]){
-                sub += a[i]
-            }
-            else{
-                break;
-            }
-        }
-        return sub
-    }
-    rest (sub:string,origin:string){
-        let temp = "";
-        for(let i  = sub.length;i < origin.length;i++){
-            temp += origin[i]
-        }
-        return temp
-    }
-    // AddExistLeaf(l:LeafNode){
-    //     let index = parseInt("0x"+ l.keyEnd[0], 10)
-    //     console.log(index);
-    //     if(this.HexArray[index]){
-
-    //     }
-    //     else{
-    //         this.HexArray[index] = l;
-    //     }
-    // }
-}
-
-export class ExtensionNode{
-    prefix : number;
-    sharedNibble : string;
-    nextNode : BranchNode;
-    constructor(shared:string){
-        this.AddShard(shared)
-    }
-    AddShard(shared:string){
-        this.sharedNibble = shared
-        if(this.sharedNibble.length%2 == 0){
-            // Leaf node with even number of keyend
-            this.prefix = 0
-        }
-        else{
-            // Leaf node with odd number of keyend
-            this.prefix = 1
-        }
-        this.nextNode = new BranchNode();
-    }
-
-    Addnode(k:string,v:number){
-        this.nextNode.Addnode(this.rest(this.sharedNibble,k),v);
-    }
-
-    longest (a : string,b: string){
-        let sub = "";
-        for(let i  = 0;i < a.length;i++){
-            if(a[i] == b[i]){
-                sub += a[i]
-            }
-            else{
-                break;
-            }
-        }
-        return sub
-    }
-    print(){
-        this.nextNode.print();
-        console.log(this);
-    }
-    rest (sub:string,origin:string){
-        let temp = "";
-        for(let i  = sub.length;i < origin.length;i++){
-            temp += origin[i]
-        }
-        return temp
-    }
-}
+import {LeafNode} from './LeafNode';
+import {ExtensionNode} from './ExtensionNode'
+import {BranchNode} from './BranchNode'
+import { SHARLP,longest,rest ,hashignore32} from './Common';
 
 export class MerklePatriciaTrie{
     root : any;
+    roothash : string;
     constructor(){
 
     }
 
-    AddNode(address:string , value:number){
+    AddNode(address:string , value:any){
         if(!this.root){
-            this.root = new LeafNode(address,value);
+            this.root = new LeafNode()
+            this.root.Addnode(address,value);
+            return
+        }
+        if(this.checkExist(address)){
+            console.log("This node is already exist")
             return
         }
         // 若現在node是 leaf node
         if(this.root.constructor.name == LeafNode.name){
-            let subaddress = this.longest(this.root.keyEnd,address);
+            let subaddress = longest(this.root.keyEnd,address);
             let tempExtension = new ExtensionNode(subaddress);
             tempExtension.Addnode(address,value)
             tempExtension.Addnode(this.root.keyEnd,this.root.value)
@@ -160,37 +36,53 @@ export class MerklePatriciaTrie{
         // 若現在node是 Extension node
         else if(this.root.constructor.name == ExtensionNode.name){
             // this.root.Addnode(this.rest(this.root.sharedNibble,address),value)
-            this.root.Addnode(address,value)
-        }
-    }
-
-    CalculateHash(){
-        
-    }
-
-    longest (a : string,b: string){
-        let sub = "";
-        for(let i  = 0;i < a.length;i++){
-            if(a[i] == b[i]){
-                sub += a[i]
+            // console.log("A",address)
+            // console.log("S",this.root.sharedNibble)
+            if(this.root.sharedNibble[0] == address[0]){
+                this.root.Addnode(address,value)
             }
             else{
-                break;
+                // 如果第一個address char就不一樣 root要換成Branch node
+                let tempBranch = new BranchNode();
+                let index = this.root.sharedNibble[0];
+                this.root.sharedNibble = this.root.sharedNibble.substring(1,this.root.sharedNibble.length);
+                // console.log("CS",this.root.sharedNibble)
+                tempBranch.HexArray[index] = this.root;
+                tempBranch.Addnode(address,value)
+                this.root = tempBranch;
             }
         }
-        return sub
     }
 
-    rest (sub:string,origin:string){
-        let temp = "";
-        for(let i  = sub.length;i < origin.length;i++){
-            temp += origin[i]
+    checkExist(address: string){
+        return this.root.checkExist(address);
+    }
+
+    UpdateValue(address:string , value:any){
+        if(!this.checkExist(address)){
+            console.log("This node is not exist")
+            return
         }
-        return temp
+        return this.root.UpdateValue(address,value);
     }
 
     print(){
         let temp = this.root;
-        temp.print();  
+        temp.print(0);  
+    }
+    
+    list(){
+        let result = this.root.list(true)
+        let jsonResult = JSON.stringify(this.root.list(false))
+        console.log(jsonResult);
+        // console.log(SHARLP(result));
+        // console.log(typeof(this.root.hash));
+        if(typeof(this.root.hash) != typeof("string")){
+            this.roothash = hashignore32(this.root.hash);
+        }
+        else{
+            this.roothash = this.root.hash;
+        }
+        console.log("ROOTHASH :　",this.roothash)
     }
 }
