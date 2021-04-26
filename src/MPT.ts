@@ -77,7 +77,7 @@ export class MerklePatriciaTrie{
         console.log(jsonResult);
         // console.log(SHARLP(result));
         // console.log(typeof(this.root.hash));
-        
+        this.root.hash = this.root.hashself()
         if(Buffer.isBuffer(this.root.hash)){
             this.roothash = this.root.hash.toString("hex")
         }

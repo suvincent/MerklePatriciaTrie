@@ -60,6 +60,7 @@ var MerklePatriciaTrie = (function () {
         var result = this.root.list(true);
         var jsonResult = JSON.stringify(this.root.list(false));
         console.log(jsonResult);
+        this.root.hash = this.root.hashself();
         if (Buffer.isBuffer(this.root.hash)) {
             this.roothash = this.root.hash.toString("hex");
         }

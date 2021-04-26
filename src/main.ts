@@ -38,7 +38,8 @@ for (var key in p) {
         tree.AddNode(key,p[key])
     }
 }
-
+tree.AddNode('a711356' , '46')
+tree.UpdateValue('a711356' , '460')
 // console.log("checkExist: ",tree.checkExist("a711355"))
 // tree.AddNode("a7f9365",20)
 // tree.AddNode("a77d337",40)

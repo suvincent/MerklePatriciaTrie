@@ -9,5 +9,7 @@ for (var key in p) {
         tree.AddNode(key, p[key]);
     }
 }
+tree.AddNode('a711356', '46');
+tree.UpdateValue('a711356', '460');
 tree.print();
 tree.list();
