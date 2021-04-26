@@ -45,7 +45,8 @@ export class MerklePatriciaTrie{
                 // 如果第一個address char就不一樣 root要換成Branch node
                 let tempBranch = new BranchNode();
                 let index = this.root.sharedNibble[0];
-                this.root.sharedNibble = this.root.sharedNibble.substring(1,this.root.sharedNibble.length);
+                this.root.ChangeShard(this.root.sharedNibble.substring(1,this.root.sharedNibble.length))
+                // this.root.sharedNibble = this.root.sharedNibble.substring(1,this.root.sharedNibble.length);
                 // console.log("CS",this.root.sharedNibble)
                 tempBranch.HexArray[index] = this.root;
                 tempBranch.Addnode(address,value)

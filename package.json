@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc --build --clean",
-    "test" :  "tsc --build &  node dist/test",
+    "test" :  "tsc --build &  node dist/scenario2",
     "start": "tsc --build &  node dist/main"
   },
   "author": "",

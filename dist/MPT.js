@@ -35,7 +35,7 @@ var MerklePatriciaTrie = (function () {
             else {
                 var tempBranch = new BranchNode_1.BranchNode();
                 var index = this.root.sharedNibble[0];
-                this.root.sharedNibble = this.root.sharedNibble.substring(1, this.root.sharedNibble.length);
+                this.root.ChangeShard(this.root.sharedNibble.substring(1, this.root.sharedNibble.length));
                 tempBranch.HexArray[index] = this.root;
                 tempBranch.Addnode(address, value);
                 this.root = tempBranch;
