@@ -12,12 +12,13 @@ function SHARLP(input) {
     else {
         hash.reset();
         hash.update(R);
-        return hash.digest('hex');
+        return hash.digest();
     }
 }
 exports.SHARLP = SHARLP;
 function hashignore32(input) {
     var R = ethereumjs_util_1.rlp.encode(input);
+    console.log(R);
     hash.reset();
     hash.update(R);
     return hash.digest('hex');

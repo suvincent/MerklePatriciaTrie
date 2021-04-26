@@ -26,10 +26,10 @@ var LeafNode = (function () {
     };
     LeafNode.prototype.hashself = function () {
         if (this.prefix == 2) {
-            return Common_1.SHARLP([parseInt("0x20" + this.keyEnd), this.value]);
+            return Common_1.SHARLP([Buffer.from("20" + this.keyEnd, "hex"), this.value]);
         }
         else if (this.prefix == 3) {
-            return Common_1.SHARLP([parseInt("0x3" + this.keyEnd), this.value]);
+            return Common_1.SHARLP([Buffer.from("3" + this.keyEnd, "hex"), this.value]);
         }
     };
     LeafNode.prototype.print = function (LEVEL) {

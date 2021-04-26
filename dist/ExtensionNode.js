@@ -33,7 +33,7 @@ var ExtensionNode = (function () {
             var indexFornewExtensionNode = parseInt("0x" + newExtensionNode.sharedNibble[0]);
             newExtensionNode.ChangeShard(newExtensionNode.sharedNibble.substring(1, newExtensionNode.sharedNibble.length));
             this.nextNode.HexArray[indexFornewExtensionNode] = newExtensionNode;
-            this.nextNode.Addnode(k.substring(1, k.length), v);
+            this.nextNode.Addnode(Common_1.rest(this.sharedNibble, k), v);
         }
         this.hash = this.hashself();
         return this.hash;
@@ -65,14 +65,14 @@ var ExtensionNode = (function () {
     };
     ExtensionNode.prototype.hashself = function () {
         if (this.prefix == 0) {
-            return Common_1.SHARLP([parseInt("0x00" + this.sharedNibble), this.nextNode.hashself()]);
+            return Common_1.SHARLP([Buffer.from("00" + this.sharedNibble, "hex"), this.nextNode.hashself()]);
         }
         else if (this.prefix == 1) {
-            return Common_1.SHARLP([parseInt("0x１" + this.sharedNibble), this.nextNode.hashself()]);
+            return Common_1.SHARLP([Buffer.from("1" + this.sharedNibble, "hex"), this.nextNode.hashself()]);
         }
     };
     ExtensionNode.prototype.checkExist = function (address) {
-        if (Common_1.longest(this.sharedNibble, address)) {
+        if (Common_1.longest(this.sharedNibble, address) == this.sharedNibble) {
             return this.nextNode.checkExist(Common_1.rest(this.sharedNibble, address));
         }
         else {

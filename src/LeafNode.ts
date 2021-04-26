@@ -31,12 +31,12 @@ export class LeafNode{
 
     hashself(){
         if(this.prefix == 2) {
-            // return SHARLP([Buffer.from(this.keyEnd,"hex"),this.value]) // 偶數
-            return SHARLP([parseInt("0x20"+this.keyEnd),this.value]) // 偶數
+            return SHARLP([Buffer.from("20"+this.keyEnd,"hex"),this.value]) // 偶數
+            // return SHARLP([parseInt("0x20"+this.keyEnd),this.value]) // 偶數
         }
         else if(this.prefix == 3) {
-            // return SHARLP([Buffer.from(this.keyEnd,"hex"),this.value]) // 奇數
-            return SHARLP([parseInt("0x3"+this.keyEnd),this.value]) // 奇數
+            return SHARLP([Buffer.from("3"+this.keyEnd,"hex"),this.value]) // 奇數
+            // return SHARLP([parseInt("0x3"+this.keyEnd),this.value]) // 奇數
 
         }
     }

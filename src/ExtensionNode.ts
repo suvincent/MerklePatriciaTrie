@@ -54,7 +54,8 @@ export class ExtensionNode{
             // console.log("C N S",newExtensionNode.sharedNibble)
             
             this.nextNode.HexArray[indexFornewExtensionNode] = newExtensionNode;
-            this.nextNode.Addnode(k.substring(1,k.length),v);// 86f7273
+            // this.nextNode.Addnode(k.substring(1,k.length),v);// 86f7273
+            this.nextNode.Addnode(rest(this.sharedNibble,k),v);// 86f7273
         }
         this.hash = this.hashself()
         return this.hash
@@ -85,18 +86,18 @@ export class ExtensionNode{
 
     hashself(){
         if(this.prefix == 0) {
-            // return SHARLP([Buffer.from(this.sharedNibble,"hex"),this.nextNode.hashself()]);// 偶數
-            return SHARLP([parseInt("0x00"+this.sharedNibble),this.nextNode.hashself()]);// 偶數
+            return SHARLP([Buffer.from("00"+this.sharedNibble,"hex"),this.nextNode.hashself()]);// 偶數
+            // return SHARLP([parseInt("0x00"+this.sharedNibble),this.nextNode.hashself()]);// 偶數
         }
         else if(this.prefix == 1) {
-            // return SHARLP([Buffer.from(this.sharedNibble,"hex"),this.nextNode.hashself()]); // 奇數
-            return SHARLP([parseInt("0x１"+this.sharedNibble),this.nextNode.hashself()]); // 奇數
+            return SHARLP([Buffer.from("1"+this.sharedNibble,"hex"),this.nextNode.hashself()]); // 奇數
+            // return SHARLP([parseInt("0x１"+this.sharedNibble),this.nextNode.hashself()]); // 奇數
 
         }
     }
 
     checkExist(address: string){
-        if(longest(this.sharedNibble,address)){
+        if(longest(this.sharedNibble,address) == this.sharedNibble){
             return this.nextNode.checkExist(rest(this.sharedNibble,address))
         }
         else{

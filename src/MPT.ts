@@ -77,7 +77,11 @@ export class MerklePatriciaTrie{
         console.log(jsonResult);
         // console.log(SHARLP(result));
         // console.log(typeof(this.root.hash));
-        if(typeof(this.root.hash) != typeof("string")){
+        
+        if(Buffer.isBuffer(this.root.hash)){
+            this.roothash = this.root.hash.toString("hex")
+        }
+        else if(typeof(this.root.hash) != typeof("string")){
             this.roothash = hashignore32(this.root.hash);
         }
         else{

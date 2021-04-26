@@ -11,6 +11,10 @@ export class BranchNode{
     }
 
     Addnode(k:string,v:any){
+        if(k==""){
+            this.value = v
+            return
+        }
         let index = parseInt("0x"+ k[0])
         if(this.HexArray[index]){
             if(this.HexArray[index].constructor.name == LeafNode.name){
@@ -35,13 +39,13 @@ export class BranchNode{
         else{
             // console.log("QQ",k.substring(1,k.length))
             // console.log(v)
-            if(k.substring(1,k.length).length > 0){
+            // if(k.substring(1,k.length).length > 0){
                 this.HexArray[index] = new LeafNode()
                 this.HexArray[index].Addnode(k.substring(1,k.length),v);
-            }
-            else{
-                this.value = v
-            }
+            // }
+            // else{
+            //     this.value = v
+            // }
             
         }
         this.hash = this.hashself()
@@ -87,7 +91,10 @@ export class BranchNode{
                 arr[index] = Buffer.from('')
             }
         }
-        arr[16] = this.value
+        if(this.value)
+            arr[16] = this.value
+        else
+            arr[16] = Buffer.from('')
         return SHARLP(arr);
     }
 

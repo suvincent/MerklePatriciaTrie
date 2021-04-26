@@ -9,6 +9,10 @@ var BranchNode = (function () {
         this.HexArray = new Array(16);
     }
     BranchNode.prototype.Addnode = function (k, v) {
+        if (k == "") {
+            this.value = v;
+            return;
+        }
         var index = parseInt("0x" + k[0]);
         if (this.HexArray[index]) {
             if (this.HexArray[index].constructor.name == LeafNode_1.LeafNode.name) {
@@ -24,13 +28,8 @@ var BranchNode = (function () {
             }
         }
         else {
-            if (k.substring(1, k.length).length > 0) {
-                this.HexArray[index] = new LeafNode_1.LeafNode();
-                this.HexArray[index].Addnode(k.substring(1, k.length), v);
-            }
-            else {
-                this.value = v;
-            }
+            this.HexArray[index] = new LeafNode_1.LeafNode();
+            this.HexArray[index].Addnode(k.substring(1, k.length), v);
         }
         this.hash = this.hashself();
         return this.hash;
@@ -70,7 +69,10 @@ var BranchNode = (function () {
                 arr[index] = Buffer.from('');
             }
         }
-        arr[16] = this.value;
+        if (this.value)
+            arr[16] = this.value;
+        else
+            arr[16] = Buffer.from('');
         return Common_1.SHARLP(arr);
     };
     BranchNode.prototype.checkExist = function (address) {

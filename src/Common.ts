@@ -1,6 +1,7 @@
 import { Keccak } from 'sha3';
 // import {encode} from 'rlp'
-import {rlp} from 'ethereumjs-util';
+import {bnToRlp, rlp} from 'ethereumjs-util';
+
 
 const hash = new Keccak(256);
 // const hash = keccak256
@@ -9,7 +10,8 @@ export function SHARLP(input:any){
     // let R = encode(input)
     // console.log(input)
     let R = rlp.encode(input);
-    // console.log(R)
+    // console.log(R);
+    // console.log(rlp.decode(R))
     // console.log(R.byteLength)
     if(R.byteLength < 32){
         return input
@@ -17,12 +19,13 @@ export function SHARLP(input:any){
     else{
         hash.reset()
         hash.update(R);
-        return hash.digest('hex');
+        return hash.digest();
     }   
 }
 
 export function hashignore32(input:any){
     let R = rlp.encode(input);
+    console.log(R)
     hash.reset()
     hash.update(R);
     return hash.digest('hex');

@@ -30,7 +30,7 @@ import {testcase1,testcase2,testcase3,testcase4,testcase5,testcase6} from './mor
 // console.log(message);
 // testcase3 = {'a711355' : '45', 'a7f9365' : '2'}
 var tree = new MerklePatriciaTrie();
-let p = testcase5
+let p = testcase6
 // tree.AddNode("7465737456616c7565","testValue")
 for (var key in p) {
     if (p.hasOwnProperty(key)) {
