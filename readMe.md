@@ -1,4 +1,21 @@
-# not complete yet
-## lack of hash process
+# Merkle Patricia tree
+## installation
+```
+npm init
+npm i
+```
 
-## tree in special case will crash
+## run test
+```
+npm run test
+```
+
+## run simulation
+* scenario 1
+```
+npm run s1
+```
+* scenario 2
+```
+npm run s2
+```
